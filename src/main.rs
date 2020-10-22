@@ -1,3 +1,4 @@
+use std::io;
 use freetype::Library;
 use freetype::face::LoadFlag;
 use freetype::error::Error;
@@ -23,23 +24,35 @@ pub extern fn FT_Set_Var_Blend_Coordinates() -> ! {
     unimplemented!();
 }
 
-fn main() {
+/// Fuzz a font file with `contents
+fn fuzz(contents: &'static mut [u8]) -> Result<usize, Error> {
+    // Count the number of successfully parsed glyphs
+    let mut parsed_glyphs = 0usize;
+
     // Init the library
-    let lib = Library::init().unwrap();
+    let lib = Library::init()?;
 
     // Load a font face
-    let mut face = lib.new_memory_face(
-        std::fs::read("font.ttf").unwrap(), 0).unwrap();
-            
+    let as_vec = unsafe {
+        Vec::from_raw_parts(contents.as_mut_ptr(),
+            contents.len(), contents.len())
+    };
+    let mut face = lib.new_memory_face(as_vec, 0)?;
+
     // Get the number of fixed bitmap font sizes contained in this face
     let num_fixed_sizes = (*face.raw()).num_fixed_sizes;
-    assert!(num_fixed_sizes > 0);
-            
-    // Select the bitmap font size to use by index, in this case, we pick the
-    // first available fixed bitmap size by using `0`
-    // This is an index into `face.available_sizes`
-    let err: Error = unsafe { FT_Select_Size(face.raw_mut(), 0).into() };
-    assert!(err == Error::Ok, "FT_Select_Size() error : {}", err);
+    if num_fixed_sizes > 0 {
+        // There's a fixed bitmap size, select the first one
+    
+        // Select the bitmap font size to use by index, in this case, we pick
+        // the first available fixed bitmap size by using `0`. This is an index
+        // into `face.available_sizes`
+        let err: Error = unsafe { FT_Select_Size(face.raw_mut(), 0).into() };
+        if err != Error::Ok { return Err(err); }
+    } else {
+        // Doesn't seem to be a bitmap font, just pick a size
+        face.set_char_size(40 * 64, 0, 50, 0)?;
+    }
 
     // Enumerate all glyphs in the character map
     unsafe {
@@ -60,12 +73,27 @@ fn main() {
             //print!("Character {} | Glyph {}\n", char_code, glyph_index);
 
             // This is what we're fuzzing, discard the results
-            let _ = face.load_glyph(glyph_index, LoadFlag::DEFAULT);
+            parsed_glyphs +=
+                face.load_glyph(glyph_index, LoadFlag::DEFAULT)
+                .is_ok() as usize;
 
             // Get the next character code and glyph index
             char_code =
                 FT_Get_Next_Char(face.raw_mut(), char_code, &mut glyph_index);
         }
     }
+
+    Ok(parsed_glyphs)
+}
+
+fn main() -> io::Result<()> {
+    for filename in std::fs::read_dir("inputs")? {
+        let filename = filename?.path();
+        
+        let status = fuzz(std::fs::read(&filename).unwrap().leak());
+        print!("Status {:?} | {:?}\n", status, filename);
+    }
+
+    Ok(())
 }
 
