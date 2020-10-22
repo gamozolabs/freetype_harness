@@ -4,27 +4,8 @@ use freetype::face::LoadFlag;
 use freetype::error::Error;
 use freetype::freetype_sys::*;
 
-#[no_mangle]
-pub extern fn FT_Get_MM_Var() -> ! {
-    unimplemented!();
-}
-
-#[no_mangle]
-pub extern fn FT_Done_MM_Var() -> ! {
-    unimplemented!();
-}
-
-#[no_mangle]
-pub extern fn FT_Get_Var_Blend_Coordinates() -> ! {
-    unimplemented!();
-}
-
-#[no_mangle]
-pub extern fn FT_Set_Var_Blend_Coordinates() -> ! {
-    unimplemented!();
-}
-
-/// Fuzz a font file with `contents
+/// Fuzz a font file with `contents`, returns the number of glyphs which
+/// successfully parsed from it
 fn fuzz(contents: &'static mut [u8]) -> Result<usize, Error> {
     // Count the number of successfully parsed glyphs
     let mut parsed_glyphs = 0usize;

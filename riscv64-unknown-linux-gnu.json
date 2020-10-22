@@ -18,8 +18,9 @@
 	  "gcc": [
 		  "-Wl,-Bstatic",
 		  "-lfreetype",
-		  "-lbz2",
 		  "-lharfbuzz",
+		  "-lfreetype",
+		  "-lbz2",
 		  "-lpng16",
 		  "-lbrotli",
 		  "-lpthread",
