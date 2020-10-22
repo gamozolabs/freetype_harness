@@ -3,6 +3,12 @@
 Whoa, why would this possibly exist. This is just a static-ly compiled
 riscv64ima binary which allows for some basic font stuff.
 
+If rv64ima means nothing to you, it's a much more stripped down soft float
+version of RISC-V which is capable of running pretty much any application and
+thus decreases the cost of making an emulator since you only need to worry
+about base instructions + atomics + muls and divs. Much simpler than supporting
+floats and stuff.
+
 I'm mainly throwing this on GitHub because getting a custom Rust core+std
 being compiled with custom CPU features is gonna be a neat trick for me in
 the future. Especially static + glibc, which Rust really doesn't support.
