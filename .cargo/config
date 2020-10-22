@@ -1,0 +1,4 @@
+[target.riscv64-unknown-linux-gnu.freetype]
+rustc-link-search = ["C:\\Path\\To\\binaries\\i686"]
+rustc-link-lib = ["freetype"]
+

@@ -1,0 +1,51 @@
+{
+  "arch": "riscv64",
+  "cpu": "generic-rv64",
+  "crt-static-default": true,
+  "no-default-libraries": false,
+  "data-layout": "e-m:e-p:64:64-i64:64-i128:128-n64-S128",
+  "env": "gnu",
+  "executables": true,
+  "features": "+m,+a",
+  "is-builtin": true,
+  "linker": "riscv64-unknown-linux-gnu-gcc",
+  "linker-flavor": "gcc",
+  "linker-is-gnu": true,
+  "llvm-target": "riscv64",
+  "max-atomic-width": 64,
+  "os": "linux",
+  "late-link-args": {
+	  "gcc": [
+		  "-Wl,-Bstatic",
+		  "-lfreetype",
+		  "-lbz2",
+		  "-lharfbuzz",
+		  "-lpng16",
+		  "-lbrotli",
+		  "-lpthread",
+		  "-lm",
+		  "-lz"
+	  ]
+  },
+  "panic-strategy": "abort",
+  "target-c-int-width": "32",
+  "target-endian": "little",
+  "target-family": "unix",
+  "target-pointer-width": "64",
+  "unsupported-abis": [
+    "cdecl",
+    "stdcall",
+    "fastcall",
+    "vectorcall",
+    "thiscall",
+    "aapcs",
+    "win64",
+    "sysv64",
+    "ptx-kernel",
+    "msp430-interrupt",
+    "x86-interrupt",
+    "amdgpu-kernel"
+  ],
+  "vendor": "unknown"
+}
+
