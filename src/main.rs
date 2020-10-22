@@ -27,7 +27,8 @@ fn main() {
     let lib = Library::init().unwrap();
 
     // Load a font face
-    let face = lib.new_face("font.ttf", 0).unwrap();
+    let face = lib.new_memory_face(
+        std::fs::read("font.ttf").unwrap(), 0).unwrap();
     
     // Set the font size
     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
