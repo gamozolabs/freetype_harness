@@ -1,4 +1,4 @@
-extern crate freetype;
+use freetype::Library;
 
 #[no_mangle]
 pub extern fn FT_Get_MM_Var() -> ! {
@@ -21,8 +21,6 @@ pub extern fn FT_Set_Var_Blend_Coordinates() -> ! {
 }
 
 fn main() {
-    use freetype::Library;
-
     // Init the library
     let lib = Library::init().unwrap();
 
